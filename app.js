@@ -1,28 +1,34 @@
-const express = require("express")
-const app = express()
-const userRouter = require('./routes/user.routes')
-const dotenv = require('dotenv');
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const dotenv = require("dotenv");
+const userRouter = require("./routes/user.routes");
+const indexRouter = require("./routes/index.routes");
+const connectToDB = require("./config/db");
+
 dotenv.config();
-const connectToDB = require('./config/db')
-connectToDB()
-const cookieParser = require('cookie-parser');
+connectToDB();
+
+const app = express();
+
+// ✅ Middleware (correct order)
+app.use(cors({
+  origin: true,          // allow same-origin requests (Render)
+  credentials: true      // allow cookies to be sent
+}));
 app.use(cookieParser());
-const indexRouter = require('./routes/index.routes')
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// ✅ View engine
+app.set("view engine", "ejs");
 
-dotenv.config()
+// ✅ Routes
+app.use("/user", userRouter);
+app.use("/", indexRouter);
 
-app.set("view engine", "ejs")
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
-
-
-app.use('/user', userRouter)
-app.use('/', indexRouter)
-
-
+// ✅ Start server
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
