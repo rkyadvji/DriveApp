@@ -6,6 +6,9 @@ const supabase = require('../config/supabase.config'); // <-- IMPORTANT
 const File = require('../models/files.models');
 const auth = require('../middlewares/authe.js');
 
+router.get("/", (req, res) => {
+  res.send("🚀 Drive App backend is live and working on Render!");
+});
 // Render home page
 router.get('/home', auth, async (req, res) => {
 
